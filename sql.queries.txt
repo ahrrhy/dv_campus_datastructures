@@ -1,0 +1,96 @@
+CREATE TABLE transport_type (
+    transport_type_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Transport type ID',
+    transport_type VARCHAR(127) NOT NULL COMMENT 'Transport type',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Transport Types';
+
+CREATE TABLE transport (
+    transport_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Transport ID',
+    transport_type_id INT(10) UNSIGNED NOT NULL COMMENT 'Transport type ID',
+    transport_uid VARCHAR(127) NOT NULL COMMENT 'Transport UID',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Transport in the firm';
+
+ALTER TABLE transport
+    ADD CONSTRAINT TRANSPORT_TRANSPORT_ID_TRANSPORT_TYPE_TRANSPORT_TYPE_ID
+        FOREIGN KEY (transport_type_id) REFERENCES transport_type (transport_type_id)
+            ON DELETE RESTRICT ;
+
+CREATE TABLE salary (
+    salary_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Transport ID',
+    salary_value INT(10) UNSIGNED NOT NULL COMMENT 'Salary value, UAH',
+    salary_date DATE NOT NULL COMMENT 'Salary date',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Payed salaries';
+
+CREATE TABLE position (
+    position_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Transport ID',
+    position_name VARCHAR(127) NOT NULL COMMENT 'Position name',
+    can_drive TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Can drive transport',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Firm employee positions';
+
+CREATE TABLE employee (
+    employee_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Employee ID',
+    first_name VARCHAR(127) NOT NULL COMMENT 'First name',
+    last_name VARCHAR(127) NOT NULL COMMENT 'Last name',
+    dob DATE NOT NULL COMMENT 'Date of birth',
+    position_id INT(10) UNSIGNED NOT NULL COMMENT 'Position ID',
+    start_date DATE NOT NULL COMMENT 'Date when the employee start working',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Employees on the firm';
+
+ALTER TABLE employee
+    ADD CONSTRAINT EMPLOYEE_EMPLOYEE_ID_POSITION_POSITION_ID
+        FOREIGN KEY (position_id) REFERENCES position (position_id)
+            ON DELETE RESTRICT ;
+
+CREATE TABLE employees_salary_payment (
+    payment_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Payment ID',
+    salary_id INT(10) UNSIGNED NOT NULL COMMENT 'Transport ID',
+    employee_id INT(10) UNSIGNED NOT NULL COMMENT 'Employee ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Employee\'s salary';
+
+ALTER TABLE employees_salary_payment
+    ADD CONSTRAINT EMPLOYEES_SALARY_EMPLOYEE_ID_EMPLOYEE_EMPLOYEE_ID
+        FOREIGN KEY (employee_id) REFERENCES employee (employee_id)
+            ON DELETE RESTRICT;
+ALTER TABLE employees_salary_payment
+    ADD CONSTRAINT EMPLOYEES_SALARY_SALARY_ID_SALARY_SALARY_ID
+        FOREIGN KEY (salary_id) REFERENCES salary (salary_id)
+            ON DELETE RESTRICT;
+
+CREATE TABLE transport_routes (
+    route_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Route ID',
+    route_number INT(10) UNSIGNED NOT NULL COMMENT 'Route Number',
+    route_description VARCHAR(127) COMMENT 'Route description'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='City transport routes';
+
+CREATE TABLE daily_income (
+    income_id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'Income ID',
+    employee_id INT(10) UNSIGNED NOT NULL COMMENT 'Employee ID',
+    transport_id INT(10) UNSIGNED NOT NULL COMMENT 'Transport ID',
+    income_value INT(20) NOT NULL DEFAULT 0 COMMENT 'Income value',
+    income_date DATE NOT NULL COMMENT 'Income date',
+    route_id INT(10) UNSIGNED NOT NULL COMMENT 'Rout ID',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation time',
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE now()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Daily incomes from employee on transport';
+
+ALTER TABLE daily_income
+    ADD CONSTRAINT DAILY_INCOME_EMPLOYEE_ID_EMPLOYEE_EMPLOYEE_ID
+        FOREIGN KEY (employee_id) REFERENCES employee (employee_id)
+            ON DELETE RESTRICT;
+ALTER TABLE daily_income
+    ADD CONSTRAINT DAILY_INCOME_TRANSPORT_ID_TRANSPORT_TRANSPORT_ID
+        FOREIGN KEY (transport_id) REFERENCES transport (transport_id)
+            ON DELETE RESTRICT;
+ALTER TABLE daily_income
+    ADD CONSTRAINT DAILY_INCOME_ROUTE_ID_TRANSPORT_ROUTES_ROUTE_ID
+        FOREIGN KEY (route_id) REFERENCES transport_routes (route_id)
+            ON DELETE RESTRICT;
