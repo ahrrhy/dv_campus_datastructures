@@ -1,0 +1,43 @@
+SELECT * FROM employee ORDER BY employee.last_name;
+
+SELECT CONCAT(e.first_name, ' ', e.last_name) 'employee name',
+       AVG(s.salary_value) 'Average Salary'
+    FROM employee e
+    JOIN employees_salary_payment esp ON e.employee_id = esp.employee_id
+    JOIN salary s on esp.salary_id = s.salary_id
+    GROUP BY e.employee_id;
+
+SELECT p.position_name 'Position',
+       AVG(s.salary_value) 'Average Salary',
+       MAX(s.salary_value) 'Maximum Salary'
+    FROM position p
+    INNER JOIN employee e on p.position_id = e.position_id
+    INNER JOIN employees_salary_payment esp on e.employee_id = esp.employee_id
+    INNER JOIN salary s on esp.salary_id = s.salary_id
+    GROUP BY p.position_name
+    ORDER BY 'Maximum Salary';
+
+SELECT CONCAT(e.first_name, ' ', e.last_name) 'Employee Name',
+       SUM(di.income_value) 'Total Income',
+       COUNT(di.employee_id) 'Days Worked'
+    FROM employee e
+    INNER JOIN daily_income di on e.employee_id = di.employee_id
+    GROUP BY e.employee_id;
+
+SELECT t.transport_uid 'Transport UID',
+       SUM(di.income_value) 'Total Income',
+       AVG(di.income_value) 'Average Income',
+       COUNT(di.employee_id) 'Days Worked'
+    FROM transport t
+    INNER JOIN  daily_income di on t.transport_id = di.transport_id
+    GROUP BY t.transport_uid
+    ORDER BY 'Days Worked' DESC;
+
+SELECT CONCAT(e.first_name, ' ', e.last_name) 'Employee Name'
+    FROM employee e
+    WHERE MONTH(e.dob) = '05';
+
+SELECT CONCAT(e.first_name, ' ', e.last_name) 'Employee Name',
+       (YEAR(CURRENT_DATE()) - YEAR(e.start_date)) 'Worked Years'
+    FROM employee e
+    GROUP BY e.employee_id;
