@@ -1,0 +1,17 @@
+ALTER TABLE employee ADD INDEX `EMPLOYEE_FIRST_NAME_EMPLOYEE_LAST_NAME` (first_name, last_name);
+
+ALTER TABLE employee ADD INDEX `EMPLOYEE_LAST_NAME` (last_name);
+
+ALTER TABLE employee ADD INDEX `EMPLOYEE_LAST_NAME_EMPLOYEE_DOB` (last_name, dob);
+
+ALTER TABLE employee ADD INDEX `EMPLOYEE_LAST_NAME_EMPLOYEE_START_DATE` (last_name, start_date);
+
+ALTER TABLE daily_income ADD INDEX `DAILY_INCOME_EMPLOYEE_ID_INCOME_VALUE_INCOME_DATE` (employee_id, income_value, income_date);
+
+ALTER TABLE daily_income ADD INDEX `DAILY_INCOME_TRANSPORT_ID_INCOME_VALUE_INCOME_DATE` (transport_id, income_value, income_date);
+
+ALTER TABLE position ADD INDEX `POSITION_POSITION_NAME_POSITION_CAN_DRIVE` (position_name, can_drive);
+
+ALTER TABLE salary ADD INDEX `SALARY_SALARY_ID_SALARY_SALARY_VALUE` (salary_id, salary_value);
+
+ALTER TABLE transport ADD INDEX `TRANSPORT_TRANSPORT_UID` (transport_uid);
